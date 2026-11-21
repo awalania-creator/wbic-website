@@ -1,0 +1,10 @@
+# WBIC statische site + nginx. Bouwen vanuit de repo-root:
+#   docker buildx build --platform linux/amd64 -f Dockerfile.web --build-arg COMMIT_SHA=$(git rev-parse HEAD) -t wbic-web:<tag> .
+# Geen RUN-stappen: bouwt zonder emulatie voor elk doelplatform. (De standaard
+# 50x.html van nginx blijft daardoor in het image staan; die is onschadelijk.)
+FROM nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+ARG COMMIT_SHA
+COPY index.html contact.html diensten.html algemene-voorwaarden.html styles.css logo.svg /usr/share/nginx/html/
+COPY nginx/default.conf /etc/nginx/conf.d/default.conf
+LABEL org.opencontainers.image.source="https://github.com/awalania-creator/wbic-website" org.opencontainers.image.revision="${COMMIT_SHA}"
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 CMD wget --spider -q http://127.0.0.1/ || exit 1
