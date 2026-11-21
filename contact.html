@@ -56,7 +56,8 @@
         <form class="form-card" aria-labelledby="form-title" novalidate>
           <h3 id="form-title">Stuur ons een bericht</h3>
           <p class="form-sub">Vul het formulier in en we nemen zo snel mogelijk contact op.</p>
-          <div class="field-row"><label class="field"><span>Naam</span><input type="text" name="naam" autocomplete="name" required maxlength="100" placeholder="Uw naam" /></label></div>
+          <div class="field-row"><label class="field"><span>Naam</span><input type="text" name="naam" autocomplete="name" required maxlength="100" placeholder="Uw naam" /></label><label class="field"><span>E-mailadres</span><input type="email" name="email" autocomplete="email" required maxlength="150" placeholder="naam@organisatie.nl" /></label></div>
+          <div aria-hidden="true" style="position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden"><label>Website<input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
           <label class="field"><span>Onderwerp</span><input type="text" name="onderwerp" required maxlength="200" placeholder="Waar gaat het over?" /></label>
           <label class="field"><span>Bericht</span><textarea name="bericht" required maxlength="5000" placeholder="Vertel ons kort waar u mee bezig bent..."></textarea></label>
           <div class="cf-turnstile" data-sitekey="0x4AAAAAAB7TVfNVCnvnatK_" data-theme="light"></div>
@@ -72,7 +73,7 @@
       e.preventDefault();const form=e.target;const btn=form.querySelector('button[type="submit"]');
       const turnstileToken=turnstile.getResponse();
       if(!turnstileToken){alert('Please complete the CAPTCHA');return;}
-      const data={naam:form.querySelector('input[name="naam"]').value,onderwerp:form.querySelector('input[name="onderwerp"]').value,bericht:form.querySelector('textarea[name="bericht"]').value,captchaToken:turnstileToken};
+      const data={naam:form.querySelector('input[name="naam"]').value,email:form.querySelector('input[name="email"]').value,website:form.querySelector('input[name="website"]').value,onderwerp:form.querySelector('input[name="onderwerp"]').value,bericht:form.querySelector('textarea[name="bericht"]').value,captchaToken:turnstileToken};
       btn.disabled=true;const orig=btn.textContent;btn.textContent='Verzenden...';
       try{const r=await fetch('/api/contact',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
         const result=await r.json();
