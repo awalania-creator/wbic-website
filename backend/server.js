@@ -85,6 +85,11 @@ const transportConfig = {
   secure: SMTP_SECURE,
   requireTLS: !SMTP_SECURE,
   name: process.env.SMTP_HELO_NAME || 'wbic.nl',
+  // Altijd via IPv4 vertrekken: de Workspace-relay laat alleen het IPv4-adres
+  // van de server toe. nodemailer kent geen `family`-optie en valt terug op
+  // IPv6 als er geen A-record is; een IPv4-gebonden socket (0.0.0.0) kan een
+  // IPv6-doel niet bereiken, dus IPv6-uitgang is daarmee uitgesloten.
+  localAddress: process.env.SMTP_LOCAL_ADDRESS || '0.0.0.0',
   tls: { servername: process.env.SMTP_HOST || 'smtp-relay.gmail.com' },
   connectionTimeout: 15000,
   greetingTimeout: 15000,
