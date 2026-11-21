@@ -21,7 +21,8 @@ const ALLOWED_ORIGINS = [
   'https://wbic.nl',
   'https://www.wbic.nl',
   'https://wbic.aiwbic.cloud',
-  /^http:\/\/localhost(:\d+)?$/
+  // localhost alleen buiten productie (lokaal ontwikkelen)
+  ...(process.env.NODE_ENV === 'production' ? [] : [/^http:\/\/localhost(:\d+)?$/])
 ];
 
 const corsOptions = {
@@ -42,7 +43,8 @@ app.use(cors(corsOptions));
 
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000, max: 5,
-  message: 'Too many requests. Please try again later.',
+  // JSON, zodat het formulier (r.json()) een nette melding toont i.p.v. 'Network error'
+  message: { success: false, error: 'Te veel verzoeken. Probeer het over 10 minuten opnieuw.' },
   standardHeaders: true, legacyHeaders: false,
   skip: (req) => req.path === '/health'
 });
